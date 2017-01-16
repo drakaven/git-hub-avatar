@@ -12,7 +12,8 @@ var GITHUB_USER = dotenv.parsed.TOKENUSER;
 var GITHUB_TOKEN = dotenv.parsed.TOKEN;
 
 var starCount = {};
-
+var responseCount  = 0;
+var processCount = 0;
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
@@ -37,27 +38,33 @@ const getRepoContributors = function(repoOwner, repoName, callback) {
   })
 }
 
-const getStarred = function(user){
-  var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/users/' + user +'/starred'
-    options = {
-    url: requestURL,
-    headers: {
-      'User-Agent': 'drakaven'
+const getStarred = function(user) {
+  var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/users/' + user + '/starred'
+  options = {
+      url: requestURL,
+      headers: {
+        'User-Agent': 'drakaven'
+      }
     }
-  }
     //console.log(requestURL.substring(0, requestURL.indexOf('{')));
-    request.get(options, function(error, response, body) {
-      parsedBody = JSON.parse(body);
-      parsedBody.forEach((item) => {
-        (starCount.hasOwnProperty(item.full_name)) ? starCount[item.full_name] ++ : starCount[item.full_name] = 1;
-      });
-      console.log(starCount);
+  request.get(options, function(error, response, body) {
+    parsedBody = JSON.parse(body);
+    parsedBody.forEach((item) => {
+      (starCount.hasOwnProperty(item.full_name)) ? starCount[item.full_name]++: starCount[item.full_name] = 1;
+    });
+    processCount++;
+    if (responseCount === processCount) console.log(starCount);
+
   });
 }
 
 getRepoContributors(repoOwner, repoName, function(err, result) {
   //passed in as the callback runs downloadImage of each user in body json
+  responseCount = result.length
   result.forEach((user) => {
     getStarred(user.login);
   });
 });
+
+
+
