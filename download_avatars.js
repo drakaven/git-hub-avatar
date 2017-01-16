@@ -1,3 +1,6 @@
+//make dir required?
+
+//get command line args
 var repoOwner = process.argv[2];
 var repoName = process.argv[3];
 if (!repoName) {
@@ -11,28 +14,29 @@ var GITHUB_USER = "drakaven";
 var GITHUB_TOKEN = "e40639e04429fc58aa5b981d58f243e0dcde314d";
 console.log('Welcome to the GitHub Avatar Downloader!');
 
-const getRepoContributors = function(repoOwner, repoName, cb) {
+
+const getRepoContributors = function(repoOwner, repoName, callback) {
+  //construct url format for api
   var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
+  // add required user-agent
   options = {
     url: requestURL,
     headers: {
       'User-Agent': 'drakaven'
     }
   };
+  //send request
   request(options, function(error, response, body) {
     if (!error && response.statusCode == 200) {
-      cb(error, JSON.parse(body));
+      //call back to process the parsed body
+      callback(error, JSON.parse(body));
     }
   })
 }
 
-getRepoContributors(repoOwner, repoName, function(err, result) {
-  result.forEach((user) => {
-    downloadImageByURL(user.avatar_url, user.login);
-  });
-});
-
-function downloadImageByURL(url, filePath) {
+//given an image url get image and write to filepath
+// hardcoded directory, will fail if dir does not exist
+const downloadImageByURL = function(url, filePath) {
   request.get(url)
     .on('error', function(err) {
       throw err;
@@ -46,3 +50,11 @@ function downloadImageByURL(url, filePath) {
       console.log('Downloading Complete');
     });
 }
+
+//call the function
+getRepoContributors(repoOwner, repoName, function(err, result) {
+  //passed in as the callback runs downloadImage of each user in body json
+  result.forEach((user) => {
+    downloadImageByURL(user.avatar_url, user.login);
+  });
+});
