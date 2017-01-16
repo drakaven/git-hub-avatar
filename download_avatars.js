@@ -4,9 +4,8 @@
 //does not create a folder
 //hard coded folder
 
+var dotenv = require('dotenv').config();
 //get command line args owener and name
-require('dotenv').config();
-
 var repoOwner = process.argv[2];
 var repoName = process.argv[3];
 if (!repoName) {
@@ -15,8 +14,8 @@ if (!repoName) {
 } ;
 var request = require('request');
 var fs = require('fs');
-var GITHUB_USER = process.env.TOKENUSER;
-var GITHUB_TOKEN = process.env.TOKEN;
+var GITHUB_USER = dotenv.parsed.TOKENUSER;
+var GITHUB_TOKEN = dotenv.parsed.TOKEN;
 console.log('Welcome to the GitHub Avatar Downloader!');
 
 
