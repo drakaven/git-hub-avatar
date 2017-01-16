@@ -1,17 +1,22 @@
-//make dir required?
+//get avatar images from user contributins to specificed github repo
 
-//get command line args
+//does not return paginated results
+//does not create a folder
+//hard coded folder
+
+//get command line args owener and name
+require('dotenv').config();
+
 var repoOwner = process.argv[2];
 var repoName = process.argv[3];
 if (!repoName) {
   console.log("User AND Repo Name required. Exiting")
   process.exit()
 } ;
-
 var request = require('request');
 var fs = require('fs');
-var GITHUB_USER = "drakaven";
-var GITHUB_TOKEN = "e40639e04429fc58aa5b981d58f243e0dcde314d";
+var GITHUB_USER = process.env.TOKENUSER;
+var GITHUB_TOKEN = process.env.TOKEN;
 console.log('Welcome to the GitHub Avatar Downloader!');
 
 
