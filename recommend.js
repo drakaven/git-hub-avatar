@@ -12,10 +12,10 @@ var GITHUB_USER = dotenv.parsed.TOKENUSER;
 var GITHUB_TOKEN = dotenv.parsed.TOKEN;
 
 var starCount = {};
-var responseCount  = 0;
+var responseCount = 0;
 var processCount = 0;
 
-console.log('Welcome to the GitHub Avatar Downloader!');
+console.log('Welcome to the Repo Recommender Downloader!');
 
 
 const getRepoContributors = function(repoOwner, repoName, callback) {
@@ -53,9 +53,21 @@ const getStarred = function(user) {
       (starCount.hasOwnProperty(item.full_name)) ? starCount[item.full_name]++: starCount[item.full_name] = 1;
     });
     processCount++;
-    if (responseCount === processCount) console.log(starCount);
-
+    if (responseCount === processCount) topFive(starCount);
   });
+}
+
+const topFive = function(obj) {
+  var arr = [];
+  for (item in obj) {
+    arr.push([item, obj[item]]);
+  };
+  arr = arr.sort((a, b) => {
+    return  b[1] - a[1];
+  });
+  for (var i = 0; i < 5; i++){
+    console.log(`[ ${arr[i][1]} stars] ${arr[i][0]}`);
+  }
 }
 
 getRepoContributors(repoOwner, repoName, function(err, result) {
@@ -65,6 +77,3 @@ getRepoContributors(repoOwner, repoName, function(err, result) {
     getStarred(user.login);
   });
 });
-
-
-
