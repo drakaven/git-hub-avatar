@@ -2,10 +2,10 @@ var dotenv = require('dotenv').config();
 //get command line args owener and name
 var repoOwner = process.argv[2];
 var repoName = process.argv[3];
-// if (!repoName) {
-//   console.log("User AND Repo Name required. Exiting")
-//   process.exit()
-// } ;
+if (!repoName) {
+  console.log("User AND Repo Name required. Exiting")
+  process.exit()
+};
 var request = require('request');
 var fs = require('fs');
 var GITHUB_USER = dotenv.parsed.TOKENUSER;
@@ -20,8 +20,8 @@ console.log('Welcome to the Repo Recommender Downloader!');
 
 const getRepoContributors = function(repoOwner, repoName, callback) {
   //construct url format for api
-  //var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
-  var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/jquery/jquery/contributors';
+  var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
+  //var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/jquery/jquery/contributors';
   // add required user-agent
   options = {
     url: requestURL,
@@ -41,31 +41,36 @@ const getRepoContributors = function(repoOwner, repoName, callback) {
 const getStarred = function(user) {
   var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/users/' + user + '/starred'
   options = {
-      url: requestURL,
-      headers: {
-        'User-Agent': 'drakaven'
-      }
+    url: requestURL,
+    headers: {
+      'User-Agent': 'drakaven'
     }
-    //console.log(requestURL.substring(0, requestURL.indexOf('{')));
+  }
+
   request.get(options, function(error, response, body) {
     parsedBody = JSON.parse(body);
+    //add each repo to an object to keep a counter
     parsedBody.forEach((item) => {
       (starCount.hasOwnProperty(item.full_name)) ? starCount[item.full_name]++: starCount[item.full_name] = 1;
     });
     processCount++;
+    //if all files have been processed get topfive
     if (responseCount === processCount) topFive(starCount);
   });
 }
 
+//create multi dimensional array to sort by number value
 const topFive = function(obj) {
   var arr = [];
+  //push all item value into array as two point array
   for (item in obj) {
     arr.push([item, obj[item]]);
   };
+  //sort by the second value of each entry
   arr = arr.sort((a, b) => {
-    return  b[1] - a[1];
+    return b[1] - a[1];
   });
-  for (var i = 0; i < 5; i++){
+  for (var i = 0; i < 5; i++) {
     console.log(`[ ${arr[i][1]} stars] ${arr[i][0]}`);
   }
 }
