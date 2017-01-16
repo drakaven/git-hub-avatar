@@ -1,3 +1,5 @@
+var repoOwner = process.argv[2];
+var repoName = process.argv[3];
 var request = require('request');
 var fs = require('fs');
 var GITHUB_USER = "drakaven";
@@ -19,7 +21,7 @@ const getRepoContributors = function(repoOwner, repoName, cb) {
   })
 }
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+getRepoContributors(repoOwner, repoName , function(err, result) {
   result.forEach((user) => {
     downloadImageByURL(user.avatar_url, user.login);
   });
