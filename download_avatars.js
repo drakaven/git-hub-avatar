@@ -1,5 +1,10 @@
 var repoOwner = process.argv[2];
 var repoName = process.argv[3];
+if (!repoName) {
+  console.log("User AND Repo Name required. Exiting")
+  process.exit()
+} ;
+
 var request = require('request');
 var fs = require('fs');
 var GITHUB_USER = "drakaven";
@@ -21,7 +26,7 @@ const getRepoContributors = function(repoOwner, repoName, cb) {
   })
 }
 
-getRepoContributors(repoOwner, repoName , function(err, result) {
+getRepoContributors(repoOwner, repoName, function(err, result) {
   result.forEach((user) => {
     downloadImageByURL(user.avatar_url, user.login);
   });
@@ -29,15 +34,15 @@ getRepoContributors(repoOwner, repoName , function(err, result) {
 
 function downloadImageByURL(url, filePath) {
   request.get(url)
-  .on('error', function(err) {
-    throw err;
-  })
-  .on('response', function(response) {
-    console.log('Downloading image...');
-    console.log(filePath += response.headers['content-type'].replace('image/' , '.'));
-  })
-  .pipe(fs.createWriteStream('./avatars/' + filePath))
-  .on('finish', function() {
-    console.log('Downloading Complete');
-  });
+    .on('error', function(err) {
+      throw err;
+    })
+    .on('response', function(response) {
+      console.log('Downloading image...');
+      console.log(filePath += response.headers['content-type'].replace('image/', '.'));
+    })
+    .pipe(fs.createWriteStream('./avatars/' + filePath))
+    .on('finish', function() {
+      console.log('Downloading Complete');
+    });
 }
