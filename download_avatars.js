@@ -32,7 +32,7 @@ function downloadImageByURL(url, filePath) {
   })
   .on('response', function(response) {
     console.log('Downloading image...');
-    console.log('Response', response.statusCode, response.headers['content-type']);
+    console.log(filePath += response.headers['content-type'].replace('image/' , '.'));
   })
   .pipe(fs.createWriteStream('./avatars/' + filePath))
   .on('finish', function() {
