@@ -19,6 +19,10 @@ var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.co
 console.log('Welcome to the GitHub Avatar Downloader!');
 console.log(dotenv.parsed);
 
+if (!fs.existsSync("./avatars")) {
+  fs.mkdirSync("./avatars");
+}
+
 const getRepoContributors = function(requestURL, callback) {
   //construct url format for api
 
@@ -55,7 +59,7 @@ const downloadImageByURL = function(url, filePath) {
       throw err;
     })
     .on('response', function(response) {
-            console.log(filePath += response.headers['content-type'].replace('image/', '.'));
+      console.log(filePath += response.headers['content-type'].replace('image/', '.'));
     })
     .pipe(fs.createWriteStream('./avatars/' + filePath))
     .on('finish', function() {

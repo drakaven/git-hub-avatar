@@ -16,7 +16,7 @@ This program should be executed from the command line, in the following manner:
 
 To install dependencies run:
 
- npm install request doteven
+ npm install request dotenv
 
 ## Environment file
  this project has been configured to use dotenv
