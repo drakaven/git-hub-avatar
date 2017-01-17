@@ -13,11 +13,11 @@ if (!repoName) {
 };
 var request = require('request');
 var fs = require('fs');
-var GITHUB_USER = dotenv.parsed.TOKENUSER;
-var GITHUB_TOKEN = dotenv.parsed.TOKEN;
+var GITHUB_USER = dotenv.parsed.TOKENUSER || "drakaven";
+var GITHUB_TOKEN = dotenv.parsed.TOKENUSER || "e40639e04429fc58aa5b981d58f243e0dcde314d";
 var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors?per_page=100';
 console.log('Welcome to the GitHub Avatar Downloader!');
-
+console.log(dotenv.parsed);
 
 const getRepoContributors = function(requestURL, callback) {
   //construct url format for api
